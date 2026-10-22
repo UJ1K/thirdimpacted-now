@@ -4,13 +4,6 @@ import maplibregl from 'maplibre-gl';
 import nationCenters from './nation-centers.json';
 import tonerStyle from './toner-style.json';
 
-const events = [
-  { name: 'Tokyo-3', region: 'JAPAN · 3RD NEW TOKYO CITY', coordinates: [138.7274, 35.3606], magnitude: '7.4', note: 'A city built to rise, and built to shelter.' },
-  { name: 'Hakone', region: 'JAPAN · KANTŌ REGION', coordinates: [139.023, 35.232], magnitude: '6.8', note: 'The quiet edge of the old world.' },
-  { name: 'Tokyo', region: 'JAPAN · TOKYO BAY', coordinates: [139.6917, 35.6895], magnitude: '5.9', note: 'Life carrying on, one ordinary morning at a time.' },
-  { name: 'Nerv HQ', region: 'JAPAN · GEOFRONT', coordinates: [139.025, 35.238], magnitude: '—', note: 'Beneath the surface, the last line of defense.' },
-];
-
 const initialCenter = [139.6917, 35.6895]; // Tokyo, Japan
 const initialZoom = 2.15;
 
@@ -67,30 +60,6 @@ map.on('error', ({ error }) => {
   credit.textContent = `MAP ERROR · ${detail}`;
   credit.classList.add('map-error');
   console.error('MapLibre error:', error);
-});
-
-const selectEvent = (event, index) => {
-  document.querySelector('.card-index b').textContent = String(index + 1).padStart(2, '0');
-  document.querySelector('.card-region').textContent = event.region;
-  document.querySelector('.event-name').textContent = event.name;
-  document.querySelector('.event-note').textContent = event.note;
-  document.querySelector('.magnitude').innerHTML = `${event.magnitude} <small>${event.magnitude === '—' ? '' : 'ML'}</small>`;
-  document.querySelector('.image-coordinate').innerHTML = `${Math.abs(event.coordinates[1]).toFixed(2)}° N<br>${event.coordinates[0].toFixed(2)}° E`;
-};
-
-events.forEach((event, index) => {
-  const marker = document.createElement('button');
-  marker.className = `map-marker${index === 0 ? ' is-active' : ''}`;
-  marker.type = 'button';
-  marker.setAttribute('aria-label', `Show ${event.name}`);
-  marker.innerHTML = '<span></span>';
-  marker.addEventListener('click', () => {
-    document.querySelectorAll('.map-marker').forEach((item) => item.classList.remove('is-active'));
-    marker.classList.add('is-active');
-    selectEvent(event, index);
-    map.flyTo({ center: event.coordinates, zoom: 10, duration: 1400 });
-  });
-  new maplibregl.Marker({ element: marker, anchor: 'center' }).setLngLat(event.coordinates).addTo(map);
 });
 
 const pauseOverlay = document.querySelector('.pause-overlay');

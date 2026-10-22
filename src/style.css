@@ -43,13 +43,13 @@ body {
 
 /* Common font styles */
 .eyebrow, .intro-foot, .map-heading, .map-caption, .map-credit, 
-.card-top, .card-region, .card-bottom, .pause-label, 
+.pause-label,
 .pause-message, .end-pause {
   font: 9px var(--helvetica);
   letter-spacing: .13em;
 }
 
-.eyebrow, .card-top, .card-region, .card-bottom, .map-heading, .map-caption, .pause-label, .end-pause {
+.eyebrow, .map-heading, .map-caption, .pause-label, .end-pause {
   font-family: var(--stencil);
   letter-spacing: .12em;
 }
@@ -212,30 +212,6 @@ body {
   pointer-events: none !important;
 }
 
-.map-marker {
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--accent);
-  background: #ff222233;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  padding: 0;
-}
-
-.map-marker span {
-  width: 5px;
-  height: 5px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 9px var(--accent);
-}
-
-.map-marker.is-active {
-  box-shadow: 0 0 0 5px #ff222233, 0 0 24px #ff222277;
-}
-
 .map-credit {
   position: absolute;
   right: 10px;
@@ -257,109 +233,6 @@ body {
   font-size: 10px;
   z-index: 5;
 }
-
-
-/* ==========================================
-   6. EVENT CARD SIDEBAR
-   ========================================== */
-.event-card {
-  position: absolute;
-  z-index: 2;
-  right: clamp(32px, 8vw, 140px);
-  top: 50%;
-  transform: translateY(-35%);
-  width: min(260px, 24vw);
-  background: #111e;
-  border: 1px solid #ffffff30;
-  padding: 15px 15px 13px;
-  box-shadow: 0 15px 50px #0008;
-  pointer-events: none;
-}
-
-.event-card button { pointer-events: auto; }
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #aaa;
-  font-size: 7px;
-}
-
-.card-index b { color: #fff; font-weight: 400; }
-.card-status { font-size: 7px; color: #ccc; }
-.card-status i { width: 4px; height: 4px; margin-right: 5px; }
-
-.card-image {
-  height: 100px;
-  margin: 13px 0 12px;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(0deg, #111c, #1115), radial-gradient(ellipse at 60% 110%, #363636 0, transparent 48%), linear-gradient(160deg, #282828, #151515 47%, #0a0a0a);
-  border: 1px solid #ffffff20;
-}
-
-.card-image:before, .card-image:after {
-  content: '';
-  position: absolute;
-  background: #00e6dd35;
-}
-
-.card-image:before { height: 1px; left: 0; right: 0; top: 62%; }
-.card-image:after { width: 1px; top: 0; bottom: 0; left: 60%; }
-
-.image-coordinate {
-  position: absolute;
-  left: 9px;
-  top: 9px;
-  color: #eee;
-  font: 7px/1.6 var(--mono);
-  letter-spacing: .08em;
-}
-
-.image-stamp {
-  position: absolute;
-  right: 8px;
-  bottom: 7px;
-  color: var(--accent);
-  font: 7px/1.3 var(--mono);
-  letter-spacing: .1em;
-  text-align: right;
-}
-
-.image-crosshair {
-  position: absolute;
-  left: 60%;
-  top: 62%;
-  transform: translate(-50%, -50%);
-  color: var(--accent);
-  font: 19px var(--mono);
-}
-
-.card-region { font-size: 7px; color: #bbb; margin: 0 0 7px; }
-.event-name { font: 400 25px var(--tc-win); margin: 0; color: #f1f1f1; }
-
-.event-note {
-  font-family: var(--helvetica);
-  font-size: 9px;
-  color: #bbb;
-  line-height: 1.6;
-  min-height: 29px;
-  margin: 7px 0 12px;
-}
-
-.card-bottom {
-  border-top: 1px solid #ffffff24;
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #aaa;
-  font-size: 7px;
-}
-
-.magnitude { font: 13px var(--mono); color: #f1f1f1; }
-.magnitude small { font-size: 7px; color: #aaa; }
 
 
 /* ==========================================
@@ -411,7 +284,6 @@ body {
    ========================================== */
 @media(max-width: 1000px) {
   .intro { left: 6%; top: 24%; width: 54vw; }
-  .event-card { right: 5%; top: 50%; width: 220px; }
 }
 
 @media(max-width: 700px) {
@@ -423,12 +295,6 @@ body {
   .eyebrow { margin-bottom: 13px; }
   .intro-foot { display: none; }
   .begin-button { padding: 12px; font-size: 8px; }
-  .event-card { top: auto; bottom: calc(32vh + 14px); left: 7%; right: 7%; width: auto; transform: none; padding: 10px; }
-  .card-image { height: 55px; margin: 8px 0; }
-  .event-name { font-size: 21px; }
-  .event-note { font-size: 8px; min-height: 0; margin-bottom: 8px; }
-  .card-status, .card-index { font-size: 6px; }
-  .card-region, .card-bottom { font-size: 6px; }
   .map-credit { font-size: 6px; }
   }
 
