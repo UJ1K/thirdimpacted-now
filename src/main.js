@@ -18,7 +18,7 @@ const mapPanel = document.querySelector('.map-panel');
 const syncGlobeAura = () => {
   const radius = Math.max(16, Math.min(
     140,
-    50 * (2 ** ((map.getZoom() - initialZoom) * 0.65)),
+    40 * (2 ** ((map.getZoom() - initialZoom) * 0.65)),
   ));
   mapPanel.style.setProperty('--globe-aura-radius', `${radius}vmin`);
   mapPanel.classList.toggle('has-globe-aura', map.getZoom() < 4.5);

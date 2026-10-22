@@ -15,7 +15,7 @@
   font-weight: 400;
   --muted: #aaa;
   --accent: #f22;
-  --signal: #a871e7;
+  --signal: #38ed00;
   --acid: #38ed00;
   --mono: 'DM Mono', monospace;
   --matisse: 'Matisse EB', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
@@ -108,13 +108,36 @@ body {
 .eyebrow { color: var(--signal); margin: 0 0 23px; }
 
 .intro h1 {
-  font: 400 clamp(47px, 5.2vw, 73px)/1.06 var(--matisse);
-  letter-spacing: -.04em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin: 0;
+  color: #f4f4f4;
+  font-family: var(--matisse);
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: .82;
+}
+
+.title-kicker {
+  display: block;
+  font-size: clamp(17px, 2.1vw, 30px);
+  line-height: 1;
+  letter-spacing: -.045em;
+  white-space: nowrap;
+}
+
+.title-main {
+  display: block;
+  margin-top: -.015em;
+  font-size: clamp(54px, 7.1vw, 104px);
+  line-height: .82;
+  letter-spacing: -.065em;
   color: #f4f4f4;
 }
 
-.intro h1 em { font-weight: 400; color: var(--signal); }
+.title-main br { display: block; }
 
 .intro-copy {
   font-family: var(--helvetica);
@@ -313,7 +336,8 @@ body {
   body { min-width: 320px; }
   .topbar { height: 67px; padding: 0 6%; }
   .intro { top: 112px; left: 7%; width: 86%; }
-  .intro h1 { font-size: clamp(42px, 11vw, 56px); }
+  .title-kicker { font-size: clamp(16px, 5vw, 23px); }
+  .title-main { font-size: clamp(47px, 12vw, 66px); }
   .intro-copy { margin: 12px 0 15px; font-size: 10px; }
   .eyebrow { margin-bottom: 13px; }
   .intro-foot { display: none; }
