@@ -14,6 +14,12 @@ const map = new maplibregl.Map({
   zoom: initialZoom,
   attributionControl: false,
 });
+const mapPanel = document.querySelector('.map-panel');
+const syncGlobeAura = () => {
+  mapPanel.classList.toggle('has-globe-aura', map.getZoom() < 4.5);
+};
+map.on('zoom', syncGlobeAura);
+syncGlobeAura();
 map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 map.on('style.load', () => {
   map.setProjection({ type: 'globe' });

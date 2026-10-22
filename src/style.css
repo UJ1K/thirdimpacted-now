@@ -161,6 +161,28 @@ body {
   pointer-events: auto !important;
 }
 
+.map-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .5s ease;
+  background: radial-gradient(
+    ellipse 50vmin 50vmin at 50% 50%,
+    transparent 88%,
+    rgba(122, 255, 0, .08) 96%,
+    rgba(122, 255, 0, .2) 102%,
+    rgba(122, 255, 0, .08) 111%,
+    transparent 123%
+  );
+  filter: blur(12px);
+  mix-blend-mode: screen;
+}
+
+.map-panel.has-globe-aura::after { opacity: 1; }
+
 .map-panel #map {
   position: absolute !important;
   inset: 0 !important;
@@ -220,6 +242,7 @@ body {
   font-size: 7px;
   text-shadow: 0 1px 4px #000;
   pointer-events: none !important;
+  z-index: 2;
 }
 
 .map-credit span { color: var(--signal); }
