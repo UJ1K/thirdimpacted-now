@@ -170,7 +170,7 @@ body {
   opacity: 0;
   transition: opacity .5s ease;
   background: radial-gradient(
-    ellipse 50vmin 50vmin at 50% 50%,
+    ellipse var(--globe-aura-radius, 50vmin) var(--globe-aura-radius, 50vmin) at 50% 50%,
     transparent 88%,
     rgba(122, 255, 0, .08) 96%,
     rgba(122, 255, 0, .2) 102%,
