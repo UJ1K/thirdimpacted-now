@@ -2,6 +2,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.css';
 import maplibregl from 'maplibre-gl';
 import nationCenters from './nation-centers.json';
+import tonerStyle from './toner-style.json';
 
 const events = [
   { name: 'Tokyo-3', region: 'JAPAN · 3RD NEW TOKYO CITY', coordinates: [138.7274, 35.3606], magnitude: '7.4', note: 'A city built to rise, and built to shelter.' },
@@ -15,7 +16,7 @@ const initialZoom = 2.15;
 
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://tiles.openfreemap.org/styles/liberty',
+  style: tonerStyle,
   center: initialCenter,
   zoom: initialZoom,
   attributionControl: false,
