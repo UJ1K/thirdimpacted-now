@@ -68,6 +68,9 @@ body {
   position: relative;
   z-index: 2;
   pointer-events: none;
+  background: rgb(0 0 0 / 24%);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .topbar a, .topbar button { pointer-events: auto; }
