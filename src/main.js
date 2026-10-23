@@ -25,6 +25,10 @@ const syncGlobeAura = () => {
 };
 map.on('zoom', syncGlobeAura);
 syncGlobeAura();
+// MapLibre does not automatically detect every CSS or viewport size change.
+const resizeMap = () => map.resize();
+window.addEventListener('resize', resizeMap);
+window.visualViewport?.addEventListener('resize', resizeMap);
 map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 map.on('style.load', () => {
   map.setProjection({ type: 'globe' });
@@ -99,5 +103,7 @@ function endPause() {
 document.querySelector('.end-pause').addEventListener('click', endPause);
 
 window.addEventListener('pagehide', () => {
+  window.removeEventListener('resize', resizeMap);
+  window.visualViewport?.removeEventListener('resize', resizeMap);
   map.remove();
 }, { once: true });
