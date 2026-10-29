@@ -16,10 +16,8 @@
   --muted: #aaa;
   --accent: #f22;
   --signal: #38ed00;
-  --acid: #38ed00;
   --mono: 'DM Mono', monospace;
   --matisse: 'Matisse EB', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
-  --tc-win: 'TC Win M9', 'TTJTC Win M9P', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
   --helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --stencil: Stencil, 'Stencil Std', 'Arial Black', Impact, sans-serif;
 }
@@ -39,17 +37,17 @@ body {
   min-height: 100svh; 
   overflow: hidden; 
   background: #000; 
+  --globe-center-x: 50%;
+  --globe-center-y: 50%;
 }
 
 /* Common font styles */
-.eyebrow, .intro-foot, .map-heading, .map-caption, .map-credit, 
-.pause-label,
-.pause-message, .end-pause {
+.eyebrow, .intro-foot, .map-heading, .map-caption, .map-credit {
   font: 9px var(--helvetica);
   letter-spacing: .13em;
 }
 
-.eyebrow, .map-heading, .map-caption, .pause-label, .end-pause {
+.eyebrow, .map-heading, .map-caption {
   font-family: var(--stencil);
   letter-spacing: .12em;
 }
@@ -150,22 +148,6 @@ body {
   margin: 24px 0 25px;
 }
 
-.begin-button {
-  border: 1px solid #ffffff65;
-  background: #d9d2c218;
-  color: #f0f0f0;
-  padding: 15px 18px;
-  font: 9px var(--helvetica);
-  letter-spacing: .12em;
-  cursor: pointer;
-  transition: background .2s, border .2s;
-}
-
-.begin-button:hover { background: #ff222220; border-color: var(--accent); }
-.begin-button:disabled { opacity: .45; cursor: default; }
-
-.begin-icon { color: var(--accent); font-size: 15px; margin-right: 10px; }
-.button-time { margin-left: 26px; color: #aaa; }
 .intro-foot { color: #777; line-height: 1.8; margin-top: 29px; font-size: 8px; }
 
 
@@ -196,7 +178,7 @@ body {
   opacity: 0;
   transition: opacity .5s ease;
   background: radial-gradient(
-    ellipse var(--globe-aura-radius, 50vmin) var(--globe-aura-radius, 50vmin) at 50% 50%,
+    ellipse var(--globe-aura-radius, 50vmin) var(--globe-aura-radius, 50vmin) at var(--globe-center-x) var(--globe-center-y),
     transparent 88%,
     rgba(122, 255, 0, .08) 96%,
     rgba(122, 255, 0, .2) 102%,
@@ -208,6 +190,103 @@ body {
 }
 
 .map-panel.has-globe-aura::after { opacity: 1; }
+
+.atmosphere-crosses {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.cross-orbit {
+  position: absolute;
+  left: var(--globe-center-x);
+  top: var(--globe-center-y);
+  width: 80vmin;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: cross-orbit var(--orbit-duration) linear infinite;
+  will-change: transform;
+}
+
+.cross-orbit:nth-child(2) {
+  animation-direction: reverse;
+  opacity: .78;
+}
+
+.atmosphere-cross {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  opacity: var(--brightness);
+  animation: cross-twinkle var(--twinkle-duration) ease-in-out var(--twinkle-delay) infinite alternate;
+}
+
+.atmosphere-cross::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--thickness);
+  height: var(--length);
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) rotate(var(--orientation));
+  background: linear-gradient(180deg,
+    transparent 0%,
+    #36ffc12b 18%,
+    #73ffda9c calc(var(--flare-at) - 8%),
+    #f3fffde8 var(--flare-at),
+    #75ffd89c calc(var(--flare-at) + 8%),
+    #10e8a73d 82%,
+    transparent 100%);
+  box-shadow: 0 0 4px #00ffc966, 0 0 13px #00ffc933;
+  filter: drop-shadow(0 0 4px #00ffc9);
+}
+
+.atmosphere-cross::after {
+  position: absolute;
+  content: '';
+  left: 0;
+  bottom: var(--flare-distance);
+  width: var(--flare-width);
+  height: var(--flare-thickness);
+  transform: translate(-50%, 50%) rotate(var(--orientation));
+  transform-origin: 50% 50%;
+  background: linear-gradient(90deg,
+    transparent,
+    #40ffd6 24%,
+    #fff 49%,
+    #fff 51%,
+    #40ffd6 76%,
+    transparent);
+  box-shadow: 0 0 5px #aaffed, 0 0 14px 3px #00ffc9a6;
+}
+
+.atmosphere-cross .cross-star {
+  position: absolute;
+  left: 0;
+  bottom: var(--flare-distance);
+  width: var(--star-size);
+  aspect-ratio: 1;
+  transform: translate(-50%, 50%) rotate(45deg) scaleX(.58);
+  background: #fff;
+  box-shadow: 0 0 5px 2px #fff, 0 0 16px 6px #00ffbd;
+}
+
+@keyframes cross-orbit {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes cross-twinkle {
+  from { opacity: var(--dim-brightness); }
+  to { opacity: var(--brightness); }
+}
 
 .map-panel #map {
   position: absolute !important;
@@ -285,50 +364,6 @@ body {
 
 
 /* ==========================================
-   7. FOOTER & PAUSE OVERLAY
-   ========================================== */
-.pause-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #080808f5;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .8s, visibility .8s;
-}
-
-.pause-overlay.is-visible { opacity: 1; visibility: visible; }
-.pause-mark { font: 40px var(--tc-win); letter-spacing: -0.12em; color: var(--accent); }
-.pause-label { color: #aaa; margin: 23px 0 12px; }
-
-.timer {
-  font: 400 clamp(75px, 14vw, 150px)/1 var(--helvetica);
-  color: #f1f1f1;
-  letter-spacing: -.06em;
-}
-
-.timer-track { width: min(280px, 55vw); height: 1px; background: #ffffff22; margin-top: 30px; }
-.timer-track span { display: block; width: 100%; height: 1px; background: var(--signal); transform-origin: left; animation: drain 10s linear forwards; }
-.pause-message { color: #ccc; letter-spacing: .04em; margin-top: 20px; }
-
-.end-pause {
-  margin-top: 45px;
-  border: 0;
-  background: transparent;
-  color: #ddd;
-  cursor: pointer;
-  padding: 10px;
-}
-.end-pause:hover { color: var(--accent); }
-
-@keyframes drain { to { transform: scaleX(0); } }
-
-
-/* ==========================================
    8. RESPONSIVE MEDIA QUERIES
    ========================================== */
 @media(max-width: 1000px) {
@@ -344,7 +379,6 @@ body {
   .intro-copy { margin: 12px 0 15px; font-size: 10px; }
   .eyebrow { margin-bottom: 13px; }
   .intro-foot { display: none; }
-  .begin-button { padding: 12px; font-size: 8px; }
   .map-credit { font-size: 6px; }
   }
 

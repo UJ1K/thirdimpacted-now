@@ -6,12 +6,60 @@ import tonerStyle from './toner-style.json';
 
 const initialCenter = [139.6917, 35.6895]; // Tokyo, Japan
 const initialZoom = 2.15;
+const minimumZoom = 3;
+
+// Atmospheric crosses orbit the visible globe in screen space, without map coordinates.
+const atmosphereLayer = document.querySelector('.atmosphere-crosses');
+const atmosphereOrbits = [];
+let crossSeed = 7319;
+const randomCrossValue = () => {
+  crossSeed = (crossSeed * 48271) % 2147483647;
+  return crossSeed / 2147483647;
+};
+[
+  { count: 34, size: 0.98, duration: 78 },
+  { count: 22, size: 1.12, duration: 106 },
+].forEach(({ count, size, duration }) => {
+  const orbit = document.createElement('div');
+  orbit.className = 'cross-orbit';
+  orbit.dataset.orbitSize = size;
+  orbit.style.setProperty('--orbit-duration', `${duration}s`);
+  for (let i = 0; i < count; i += 1) {
+    const angle = (360 * i) / count + (randomCrossValue() - 0.5) * (360 / count) * 0.7;
+    const cross = document.createElement('span');
+    cross.className = 'atmosphere-cross';
+    cross.style.left = `${50 + Math.cos((angle * Math.PI) / 180) * 50}%`;
+    cross.style.top = `${50 + Math.sin((angle * Math.PI) / 180) * 50}%`;
+    cross.style.setProperty('--orientation', `${angle + 90}deg`);
+    const length = 68 + randomCrossValue() * 180;
+    const flareAt = 28 + randomCrossValue() * 8;
+    cross.style.setProperty('--length', `${length}px`);
+    cross.style.setProperty('--flare-distance', `${length * (1 - flareAt / 100)}px`);
+    cross.style.setProperty('--thickness', `${0.8 + randomCrossValue() * 1.3}px`);
+    cross.style.setProperty('--flare-at', `${flareAt}%`);
+    cross.style.setProperty('--flare-width', `${14 + randomCrossValue() * 38}px`);
+    cross.style.setProperty('--flare-thickness', `${0.8 + randomCrossValue() * 1.5}px`);
+    cross.style.setProperty('--star-size', `${2 + randomCrossValue() * 7}px`);
+    cross.style.setProperty('--twinkle-duration', `${2.2 + randomCrossValue() * 4.5}s`);
+    cross.style.setProperty('--twinkle-delay', `${-randomCrossValue() * 6}s`);
+    const brightness = 0.28 + randomCrossValue() * 0.68;
+    cross.style.setProperty('--brightness', `${brightness}`);
+    cross.style.setProperty('--dim-brightness', `${brightness * 0.55}`);
+    const star = document.createElement('i');
+    star.className = 'cross-star';
+    cross.append(star);
+    orbit.append(cross);
+  }
+  atmosphereLayer.append(orbit);
+  atmosphereOrbits.push(orbit);
+});
 
 const map = new maplibregl.Map({
   container: 'map',
   style: tonerStyle,
   center: initialCenter,
   zoom: initialZoom,
+  minZoom: minimumZoom,
   attributionControl: false,
 });
 const mapPanel = document.querySelector('.map-panel');
@@ -21,6 +69,11 @@ const syncGlobeAura = () => {
     40 * (2 ** ((map.getZoom() - initialZoom) * 0.65)),
   ));
   mapPanel.style.setProperty('--globe-aura-radius', `${radius}vmin`);
+  atmosphereOrbits.forEach((orbit) => {
+    const diameter = radius * 2 * Number(orbit.dataset.orbitSize);
+    orbit.style.width = `${diameter}vmin`;
+    orbit.style.height = `${diameter}vmin`;
+  });
   mapPanel.classList.toggle('has-globe-aura', map.getZoom() < 4.5);
 };
 map.on('zoom', syncGlobeAura);
@@ -76,31 +129,6 @@ map.on('error', ({ error }) => {
   credit.classList.add('map-error');
   console.error('MapLibre error:', error);
 });
-
-const pauseOverlay = document.querySelector('.pause-overlay');
-let pauseInterval;
-document.querySelector('.begin-button').addEventListener('click', () => {
-  pauseOverlay.classList.add('is-visible');
-  pauseOverlay.setAttribute('aria-hidden', 'false');
-  document.querySelector('.begin-button').disabled = true;
-  let remaining = 10;
-  const timer = document.querySelector('.timer');
-  const update = () => { timer.textContent = `00:${String(remaining).padStart(2, '0')}`; };
-  update();
-  pauseInterval = window.setInterval(() => {
-    remaining -= 1;
-    update();
-    if (remaining <= 0) endPause();
-  }, 1000);
-});
-
-function endPause() {
-  window.clearInterval(pauseInterval);
-  pauseOverlay.classList.remove('is-visible');
-  pauseOverlay.setAttribute('aria-hidden', 'true');
-  document.querySelector('.begin-button').disabled = false;
-}
-document.querySelector('.end-pause').addEventListener('click', endPause);
 
 window.addEventListener('pagehide', () => {
   window.removeEventListener('resize', resizeMap);
