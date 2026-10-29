@@ -69,6 +69,60 @@ const map = new maplibregl.Map({
   attributionControl: false,
 });
 const mapPanel = document.querySelector('.map-panel');
+const orbitMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const idleOrbitDelay = 2200;
+const orbitSpeed = 3.8;
+let orbitFrame = 0;
+let orbitResumeTimer = 0;
+let orbitLastFrame = 0;
+let mapHasLoaded = false;
+const stopIdleOrbit = () => {
+  if (orbitFrame) window.cancelAnimationFrame(orbitFrame);
+  orbitFrame = 0;
+  orbitLastFrame = 0;
+};
+const runIdleOrbit = (timestamp) => {
+  if (!mapHasLoaded || orbitMotionPreference.matches) return;
+  if (!orbitLastFrame) orbitLastFrame = timestamp;
+  const elapsed = Math.min((timestamp - orbitLastFrame) / 1000, 0.05);
+  orbitLastFrame = timestamp;
+  const center = map.getCenter();
+  center.lng += orbitSpeed * elapsed;
+  map.setCenter(center);
+  orbitFrame = window.requestAnimationFrame(runIdleOrbit);
+};
+const resumeIdleOrbit = () => {
+  if (!mapHasLoaded || orbitMotionPreference.matches || orbitFrame) return;
+  orbitLastFrame = 0;
+  orbitFrame = window.requestAnimationFrame(runIdleOrbit);
+};
+const noteUserActivity = () => {
+  stopIdleOrbit();
+  window.clearTimeout(orbitResumeTimer);
+  if (mapHasLoaded && !orbitMotionPreference.matches) {
+    orbitResumeTimer = window.setTimeout(resumeIdleOrbit, idleOrbitDelay);
+  }
+};
+const handlePointerMove = (event) => {
+  if (event.buttons) noteUserActivity();
+};
+document.addEventListener('pointerdown', noteUserActivity, { passive: true });
+document.addEventListener('pointerup', noteUserActivity, { passive: true });
+document.addEventListener('pointermove', handlePointerMove, { passive: true });
+document.addEventListener('wheel', noteUserActivity, { passive: true });
+document.addEventListener('touchstart', noteUserActivity, { passive: true });
+document.addEventListener('touchmove', noteUserActivity, { passive: true });
+document.addEventListener('touchend', noteUserActivity, { passive: true });
+document.addEventListener('keydown', noteUserActivity);
+map.on('load', () => {
+  mapHasLoaded = true;
+  window.clearTimeout(orbitResumeTimer);
+  orbitResumeTimer = window.setTimeout(resumeIdleOrbit, idleOrbitDelay);
+});
+orbitMotionPreference.addEventListener('change', ({ matches }) => {
+  if (matches) stopIdleOrbit();
+  else noteUserActivity();
+});
 const syncGlobeAura = () => {
   const radiusBase = compactViewport.matches
     ? (window.innerWidth <= 600 ? 65 : 63)
@@ -164,6 +218,16 @@ map.on('error', ({ error }) => {
 });
 
 window.addEventListener('pagehide', () => {
+  stopIdleOrbit();
+  window.clearTimeout(orbitResumeTimer);
+  document.removeEventListener('pointerdown', noteUserActivity);
+  document.removeEventListener('pointerup', noteUserActivity);
+  document.removeEventListener('pointermove', handlePointerMove);
+  document.removeEventListener('wheel', noteUserActivity);
+  document.removeEventListener('touchstart', noteUserActivity);
+  document.removeEventListener('touchmove', noteUserActivity);
+  document.removeEventListener('touchend', noteUserActivity);
+  document.removeEventListener('keydown', noteUserActivity);
   window.removeEventListener('resize', resizeMap);
   window.visualViewport?.removeEventListener('resize', resizeMap);
   map.remove();
