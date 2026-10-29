@@ -70,8 +70,8 @@ const map = new maplibregl.Map({
 });
 const mapPanel = document.querySelector('.map-panel');
 const orbitMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-const idleOrbitDelay = 2200;
-const orbitSpeed = 3.8;
+const idleOrbitDelay = 3200;
+const orbitSpeed = 2.8;
 let orbitFrame = 0;
 let orbitResumeTimer = 0;
 let orbitLastFrame = 0;
