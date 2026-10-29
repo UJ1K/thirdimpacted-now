@@ -5,7 +5,7 @@ import nationCenters from './nation-centers.json';
 import tonerStyle from './toner-style.json';
 
 const initialCenter = [139.6917, 35.6895]; // Tokyo, Japan
-const compactViewport = window.matchMedia('(max-width: 1024px)');
+const compactViewport = window.matchMedia('(max-width: 1024px) and (pointer: coarse)');
 const desktopZoom = 3;
 const mobileZoom = 2;
 let initialZoom = compactViewport.matches ? mobileZoom : desktopZoom;
@@ -70,9 +70,15 @@ const map = new maplibregl.Map({
 });
 const mapPanel = document.querySelector('.map-panel');
 const syncGlobeAura = () => {
+  const radiusBase = compactViewport.matches
+    ? (window.innerWidth <= 600 ? 40 : 48)
+    : 60;
+  const radiusLimit = compactViewport.matches
+    ? (window.innerWidth <= 600 ? 140 : 160)
+    : 200;
   const radius = Math.max(16, Math.min(
-    140,
-    40 * (2 ** (map.getZoom() - initialZoom)),
+    radiusLimit,
+    radiusBase * (2 ** (map.getZoom() - initialZoom)),
   ));
   const radiusPixels = radius * Math.min(window.innerWidth, window.innerHeight) / 100;
   mapPanel.style.setProperty('--globe-aura-radius', `${radius}vmin`);
