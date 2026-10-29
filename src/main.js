@@ -71,10 +71,10 @@ const map = new maplibregl.Map({
 const mapPanel = document.querySelector('.map-panel');
 const syncGlobeAura = () => {
   const radiusBase = compactViewport.matches
-    ? (window.innerWidth <= 600 ? 58 : 59)
+    ? (window.innerWidth <= 600 ? 65 : 63)
     : 60;
   const radiusLimit = compactViewport.matches
-    ? (window.innerWidth <= 600 ? 180 : 190)
+    ? (window.innerWidth <= 600 ? 190 : 195)
     : 200;
   const radius = Math.max(16, Math.min(
     radiusLimit,
